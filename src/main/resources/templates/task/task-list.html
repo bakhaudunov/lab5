@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список задач</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/task-list.js"></script>
+</head>
+<body>
+<nav id="navbar">
+    <div class="nav-user">
+        <a href="/profile" class="username">
+            <span class="username" th:text="${username}"></span>
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn logout-btn">Выйти</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <div>
+        <div class="header-actions">
+<!--            <h1 class="page-title">Задачи-->
+<!--                <span class="page-counter" th:if="${!#lists.isEmpty(tasks)}" th:text="'(' + (${currentPage + 1}) + '/' + ${totalPages} + ')'"></span>-->
+<!--            </h1>-->
+            <form th:action="@{/tasks}" method="get" class="search-form">
+                <input type="text" name="search" placeholder="Поиск задач..." th:value="${search}" class="search-input">
+                <button type="submit" class="btn scroll-page-btn" th:text="${#strings.isEmpty(search) ? 'Поиск' : 'Очистить поиск'}"></button>
+            </form>
+            <form th:action="@{/tasks/new}" method="get">
+                <button type="submit" class="btn btn-primary">Создать новую задачу</button>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(tasks)}" class="error-message">
+            <p class="error">Задачи по вашему запросу не найдены.</p>
+        </div>
+
+        <table class="task-table" th:if="${!#lists.isEmpty(tasks)}">
+            <thead>
+            <tr>
+                <th class="table-cell">Название</th>
+                <th class="table-cell">Описание</th>
+                <th class="table-cell">Срок выполнения</th>
+                <th class="table-cell">Приоритет</th>
+                <th class="table-cell">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td class="table-cell">
+                    <a th:href="@{/tasks/{id}(id=${task.id})}"
+                       th:text="${task.getTitle()}"
+                       class="task-link"></a>
+                </td>
+                <td class="table-cell" th:text="${task.getDescription()}"></td>
+                <td class="table-cell" th:text="${task.getDueDate()}"></td>
+                <td class="table-cell" th:text="${task.getPriority()}"></td>
+                <td class="table-cell">
+                    <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(task.getStatus().toString().replace(' ', '-'))}"
+                          th:text="${task.getStatus()}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Управление пагинацией -->
+        <div class="pagination">
+            <div>
+                <a th:if="${currentPage > 0}" th:href="@{/tasks(page=${currentPage - 1}, search=${search})}" class="btn scroll-page-btn">Предыдущая</a>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/tasks(page=${currentPage + 1}, search=${search})}" class="btn scroll-page-btn">Следующая</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

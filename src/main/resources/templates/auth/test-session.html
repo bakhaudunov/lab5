@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница теста сессии</title>
+</head>
+<body>
+<div>
+    <div>
+        <h1>Информация о сессии</h1>
+
+        <div th:if="${username}">
+            <div>
+                <h2>Данные пользователя</h2>
+                <div>
+                    <p><span>Имя пользователя:</span> <span th:text="${username}">username</span></p>
+                    <p><span>Электронная почта:</span> <span th:text="${email}">email</span></p>
+                    <p><span>Аккаунт создан:</span> <span th:text="${#temporals.format(createdAt, 'dd-MM-yyyy HH:mm')}">date</span></p>
+                </div>
+            </div>
+
+            <div>
+                <h2>Данные сессии</h2>
+                <div>
+                    <p><span>ID сессии:</span> <span th:text="${sessionId}">id</span></p>
+                    <p><span>Создана:</span> <span th:text="${#dates.format(sessionCreationTime, 'dd-MM-yyyy HH:mm')}">creation time</span></p>
+                    <p><span>Последний доступ:</span> <span th:text="${#dates.format(sessionLastAccessedTime, 'dd-MM-yyyy HH:mm')}">last access</span></p>
+                </div>
+            </div>
+
+            <div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">
+                        Выйти
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div th:unless="${username}">
+            <p>Вы не вошли в систему.</p>
+            <a href="/login">Войти здесь</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

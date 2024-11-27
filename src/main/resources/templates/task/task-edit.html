@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование задачи</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav id="navbar">
+    <div class="nav-user">
+        <a href="/profile" class="username">
+            <span class="username" th:text="${username}"></span>
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn logout-btn">Выйти</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="task-details">
+        <h1 th:if="${task.getTitle() == null}" class="task-title">Создать задачу</h1>
+        <h1 th:if="${task.getTitle() != null}" class="task-title">Редактировать задачу</h1>
+
+        <form th:action="@{/tasks}" method="post" th:object="${task}">
+            <input type="hidden" th:field="*{id}">
+
+            <div>
+                <label for="title" class="form-label">Название</label>
+                <input type="text" class="form-control" id="title"
+                       th:field="*{title}" required>
+            </div>
+
+            <div>
+                <label for="description" class="form-label">Описание</label>
+                <textarea class="form-control" id="description"
+                          th:field="*{description}" rows="3"
+                          maxlength="999"></textarea>
+            </div>
+
+            <div>
+                <label for="dueDate" class="form-label">Срок выполнения</label>
+                <input type="date" class="form-control" id="dueDate"
+                       th:field="*{dueDate}" required>
+            </div>
+
+            <div>
+                <label for="category" class="form-label">Категория</label>
+                <select class="form-select" id="category"
+                        th:field="*{category.id}"
+                        required>
+                    <option value="">Выберите категорию</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"></option>
+                </select>
+            </div>
+
+            <div>
+                <label for="priority" class="form-label">Приоритет</label>
+                <select class="form-select" id="priority"
+                        th:field="*{priority.id}"
+                        required>
+                    <option value="">Выберите приоритет</option>
+                    <option th:each="priority : ${priorities}"
+                            th:value="${priority.id}"
+                            th:text="${priority.getPriority()}"></option>
+                </select>
+            </div>
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                <p th:each="error : ${#fields.errors('*')}"
+                   th:text="${error}"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/tasks}" class="btn btn-secondary"
+               onclick="return confirm('Вы уверены, что хотите отменить? Все несохраненные изменения будут утеряны.');">Отмена</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
