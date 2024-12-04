@@ -8,12 +8,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.List;
+
 
 import java.util.List;
 import java.util.Optional;
 
+
+
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
+    @Query("SELECT t FROM Task t WHERE t.title LIKE %:name%")
+    List<Task> findByNameContaining(@Param("name") String name);
 
     // Find all tasks by a specific user
     List<Task> findByUser(User user);
@@ -48,3 +56,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     // Find tasks by user and search query with pagination
     Page<Task> findByUserAndTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(User user, String title, String description, Pageable pageable);
 }
+

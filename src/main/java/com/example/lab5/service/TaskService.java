@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import java.util.List;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +28,19 @@ public class TaskService {
 
     @Autowired
     private TaskPriorityRepository taskPriorityRepository;
+
+    public List<Task> searchTasksByName(String name) {
+        return taskRepository.findByNameContaining(name);
+    }
+
+
+    public Page<Task> getTasks(int page, int size) {
+        return taskRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public List<Task> searchTasks(String name) {
+        return taskRepository.findByNameContaining(name);
+    }
 
     // Create a new task
     public Task createTask(Task task, User user) {

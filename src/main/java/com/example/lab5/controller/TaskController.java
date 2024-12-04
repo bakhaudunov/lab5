@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Optional;
-
+import java.util.List;
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
@@ -36,6 +36,18 @@ public class TaskController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/tasks")
+    public Page<Task> getTasks(@RequestParam int page, @RequestParam int size) {
+        return taskService.getTasks(page, size);
+    }
+
+    @GetMapping("/search")
+    public List<Task> searchTasks(@RequestParam String name) {
+        return taskService.searchTasks(name);
+    }
+
+
 
     // Display the list of tasks for the authenticated user
     @GetMapping
